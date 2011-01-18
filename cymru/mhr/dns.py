@@ -22,7 +22,7 @@ class mhr:
     self.detection    = detection
     self._hash    = _hash
   def __repr__(self):
-    return "<%s instance: TS:%s|DETECTION:%s%%|HASH:%s>" \
+    return "<%s instance: ts:%s|detection:%s%%|_hash:%s>" \
           % (self.__class__, self.ts, self.detection, self._hash)
 
 

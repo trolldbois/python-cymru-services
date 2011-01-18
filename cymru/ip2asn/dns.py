@@ -12,8 +12,7 @@ import socket
 import errno
 import logging
 
-import ADNS,adns
-import IPy
+import adns,IPy
 
 from ..core.dns import DNSClient as DNSCoreClient
 
@@ -131,13 +130,13 @@ class DNSClient(DNSCoreClient):
       pass
               
   def _makeRequestOrigin(self,ip):
-    return IPy.IP(ip).reverseName().replace('.in-addr.arpa.',self.__ORIGIN)
+    return adns.rr.TXT,IPy.IP(ip).reverseName().replace('.in-addr.arpa.',self.__ORIGIN)
   def _makeRequestOrigin6(self,ip):
-    return IPy.IP(ip).reverseName().replace('.ip6.arpa.',self.__ORIGIN6)
+    return adns.rr.TXT,IPy.IP(ip).reverseName().replace('.ip6.arpa.',self.__ORIGIN6)
   def _makeRequestASN(self,asn):
-    return "AS"+asn+self.__ASN
+    return adns.rr.TXT,"AS"+asn+self.__ASN
   def _makeRequestPeer(self,peer):
-    return IPy.IP(peer).reverseName().replace('.in-addr.arpa.',self.__PEER)
+    return adns.rr.TXT,IPy.IP(peer).reverseName().replace('.in-addr.arpa.',self.__PEER)
     
 
   def _asyncResolve( self, recordMaker, answer, qname, rr, flags, extra):

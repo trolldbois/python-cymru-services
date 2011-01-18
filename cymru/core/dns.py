@@ -109,7 +109,7 @@ class DNSClient:
     if qType in ['IP','IP6']:
       values = [IPy.IP(value).strNormal() for value in values]
     #go
-    return _lookupmany(values,qType)
+    return self._lookupmany(values,qType)
     
   ''' submits the queries to ADNS'''
   def _lookupmany_raw(self, values, qType):
@@ -121,9 +121,9 @@ class DNSClient:
     for value in values:
       #build qname and send resolve
       extra=(qType,value)
-      fqdn=buildRequest(value)
+      dnsType,fqdn=buildRequest(value)
       log.debug('Lookup %s'%(fqdn))
-      self.client.submit(fqdn,adns.rr.TXT, 0, resolveCB, extra)
+      self.client.submit(fqdn,dnsType, 0, resolveCB, extra)
     self.client.finish()
     records,not_cached=self.cache.get_cached(values,qType)
     return records.itervalues()

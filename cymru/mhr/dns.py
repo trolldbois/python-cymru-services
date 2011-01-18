@@ -9,7 +9,7 @@ import hashlib
 import errno
 import logging,sys
 
-import ADNS,adns
+import adns
 
 from ..core.dns import DNSClient as DNSCoreClient
 
@@ -57,7 +57,7 @@ class DNSClient(DNSCoreClient):
       pass
   
   def _makeRequestHash(self,hashval):
-    return '.'.join([hashval,self.__ROOT])
+    return adns.rr.TXT,'.'.join([hashval,self.__ROOT])
 
   def _asyncResolve( self, recordMaker, answer, qname, rr, flags, extra):
     log.debug(' inputs : %s ; qname:%s rr:%s flags:%s l:%s'%(answer, qname, rr, flags, extra) )
@@ -90,10 +90,10 @@ def testHash():
   #733a48a9cb49651d72fe824ca91e8d00.malware.hash.cymru.com
   res=c.lookupmany(hashes)
   for r in res:
-    print r
+    log.info( r)
   res=c.lookupmany(hashes)
   for r in res:
-    print r
+    log.info( r)
   log.debug('STOP TEST HASH\n\n')
 
 

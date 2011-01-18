@@ -102,6 +102,7 @@ class DNSClient(DNSCoreClient):
   GOOGLE - Google Inc.
   MICROSOFT-CORP---MSN-AS-BLOCK - Microsoft Corp
   """
+  QTYPES=['IP','IP6','ASN','PEER']
   ORIGIN = 'IP'
   __ORIGIN = '.origin.asn.cymru.com.'
   ORIGIN6 = 'IP6'

@@ -35,11 +35,11 @@ def iterwindow(l, slice=50):
   if a:
       yield a
 
-QTYPES=['IP','IP6','ASN','PEER']
 
 class DNSClient:
   """Python interface to DNS services.
   """
+  QTYPES=[None]
   client = None
   cache = None
   
@@ -47,9 +47,11 @@ class DNSClient:
     self.client=ADNS.init()
     self.cache = cache.Cache(svcName,memcache_host)
     
-  def _lookupmany(self, values, qType='IP'):
+  def _lookupmany(self, values, qType=None):
     ''' Lookup the values with a qType query to cymru services.
     '''
+    if qType is None:
+      qType=self.QTYPES[0]
     # iterwindows on the request...
     if (len(values) == 0):
       return
@@ -76,11 +78,15 @@ class DNSClient:
     return fullcache, not_cached
     
     """Look up a single address.  """
-  def lookup(self, value, qType='IP'):
+  def lookup(self, value, qType=None):
+    if qType is None:
+      qType=self.QTYPES[0]
     return list(self.lookupmany([value],qType))[0]
     
-  def lookupmany(self, values, qType='IP'):
+  def lookupmany(self, values, qType=None):
     """Look up many ip addresses, returning a dictionary of ip -> record"""
+    if qType is None:
+      qType=self.QTYPES[0]
     # clean values and type IP values
     values = [str(value).strip() for value in values]
     if qType in ['IP','IP6']:
@@ -95,7 +101,9 @@ class DNSClient:
         yield found[value]
     return
 
-  def lookupmany_dict(self, values, qType='IP'):
+  def lookupmany_dict(self, values, qType=None):
+    if qType is None:
+      qType=self.QTYPES[0]
     # clean values and type IP values
     values = [str(value).strip() for value in values]
     if qType in ['IP','IP6']:
@@ -191,48 +199,6 @@ def lookup_stdin():
     for r in c.lookupmany(ips):
         #print format % r.__dict__
         print r
-
-
-def testOrigin():
-  c= DNSClient()
-  ips=['88.198.224.117']
-  datas=[]
-  datas=c.lookupmany(ips)
-  for data in datas:
-    log.info("c.lookupmany(%s,qType='IP')"%(ips[0]))
-    log.info([data])
-
-def testOrigin6():
-  c= DNSClient()
-  ips=['2001:4860:8010::68','2001:7a8:1:1::76']
-  datas=[]
-  datas=c.lookupmany(ips,qType='IP6')
-  i=0
-  for data in datas:
-    log.info("c.lookupmany(%s,qType='IP6')"%(ips[i]))
-    log.info([data])
-    i+=1
-
-
-def testASN():
-  c= DNSClient()
-  asns=['1515','5005']
-  datas=c.lookupmany(asns,qType='ASN')
-  i=0
-  for data in datas:
-    log.info("c.lookup(%s,qType='ASN')"%(asns[i]))
-    log.info([data])
-    i+=1
-
-def testPeer():
-  c= DNSClient()
-  ips=['91.121.224.117']
-  datas=[]
-  datas=c.lookupmany(ips,qType='PEER')
-  for data in datas:
-    log.info("c.lookup(%s,qType='PEER')"%(ips[0]))
-    log.info([data])
-
 
 
 if __name__ == "__main__":

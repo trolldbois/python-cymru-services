@@ -1,0 +1,23 @@
+
+Python API to use Cymru services. This code is not supported nor endorsed by Cymru.
+
+Code licensed under http://www.gnu.org/licenses/gpl-3.0.txt
+
+
+Services by cymru :
+
+The Bogon Reference
+
+A bogon prefix is a route that should never appear in the Internet routing table. This can be for one of several reasons - either the prefix is within a private or reserved IP address block, or a block that has not yet been allocated to a Regional Internet Registry (RIR). The Bogon Reference pages provide a number of resources for the filtering of bogon prefixes from your routers and hosts. Check out the bogon reference for more details!
+
+The Darknet Project
+
+A darknet is a portion of routed, allocated IP space in which no active services or servers reside. These are "dark" because there is, seemingly, nothing within these networks. In fact, the darknet does contain at least one server, which vacuums up packets and flows entering the "dark" space for real-time analysis or post-event network forensics. For more information on darknets, and how they can help keep your network safe, check out our darknet project.
+
+The IP to ASN Mapping Project
+
+Team Cymru provides a number of query interfaces that allow for the mapping of IP addresses to BGP prefixes and Autonomous System Numbers (ASNs), based on BGP feeds from our 50+ BGP peers, and updated every 4 hours. This data is available through traditional WHOIS (TCP 43), DNS (UDP 53), HTTP (TCP 80), and HTTPS (TCP 443). For more information on the data available, and how to query, check out our IP to ASN Mapping Project.
+
+The Malware Hash Registry
+
+The Malware Hash Registry provides the ability to perform lookups of MD5 and SHA-1 hashes of files to see if Team Cymru's malware analysis system has classified them as malware, along with information about when the sample was last seen and an approximate anti-virus detection percentage. For more information on the data returned and how to query this system, check out the Malware Hash Registry.

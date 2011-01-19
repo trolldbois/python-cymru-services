@@ -10,10 +10,6 @@ The Bogon Reference
 
 A bogon prefix is a route that should never appear in the Internet routing table. This can be for one of several reasons - either the prefix is within a private or reserved IP address block, or a block that has not yet been allocated to a Regional Internet Registry (RIR). The Bogon Reference pages provide a number of resources for the filtering of bogon prefixes from your routers and hosts. Check out the bogon reference for more details!
 
-The Darknet Project
-
-A darknet is a portion of routed, allocated IP space in which no active services or servers reside. These are "dark" because there is, seemingly, nothing within these networks. In fact, the darknet does contain at least one server, which vacuums up packets and flows entering the "dark" space for real-time analysis or post-event network forensics. For more information on darknets, and how they can help keep your network safe, check out our darknet project.
-
 The IP to ASN Mapping Project
 
 Team Cymru provides a number of query interfaces that allow for the mapping of IP addresses to BGP prefixes and Autonomous System Numbers (ASNs), based on BGP feeds from our 50+ BGP peers, and updated every 4 hours. This data is available through traditional WHOIS (TCP 43), DNS (UDP 53), HTTP (TCP 80), and HTTPS (TCP 443). For more information on the data available, and how to query, check out our IP to ASN Mapping Project.
@@ -21,3 +17,59 @@ Team Cymru provides a number of query interfaces that allow for the mapping of I
 The Malware Hash Registry
 
 The Malware Hash Registry provides the ability to perform lookups of MD5 and SHA-1 hashes of files to see if Team Cymru's malware analysis system has classified them as malware, along with information about when the sample was last seen and an approximate anti-virus detection percentage. For more information on the data returned and how to query this system, check out the Malware Hash Registry.
+
+
+IP to ASN Mapping usage :
+
+  >>> import socket
+  >>> from cymru.ip2asn.dns import DNSClient as ip2asn
+  >>> client = ip2asn()
+  >>> 
+  >>> ip = socket.gethostbyname("www.google.com")
+  >>> client.lookup(ip,qType='IP')
+  <cymru.ip2asn.dns.recordOrigin instance: ASN:15169|PREFIX:74.125.224.0/24|CC:US|LIR:arin|DATE:2007-03-13>
+  >>> client.lookup('15169',qType='ASN')
+  <cymru.ip2asn.dns.recordASN instance: ASN:15169|CC:US|LIR:arin|OWNER:GOOGLE - Google Inc.|DATE:2000-03-30>
+  >>> 
+  >>> ip6 = socket.getaddrinfo("www.nerim.net",80,socket.AF_INET6,0,0)[0][4][0]
+  >>> client.lookup(ip6,qType='IP6')
+  <cymru.ip2asn.dns.recordOrigin6 instance: ASN:13193|PREFIX:2001:7a8::/32|CC:FR|LIR:ripencc|DATE:2002-03-13>
+  >>> client.lookupmany(['2001:4860:8010::68','2001:7a8:1:1::76'],qType='IP6')
+  <generator object lookupmany at 0xb70324dc>
+  >>> client.lookupmany(['1515','5005'],qType='ASN')
+  <generator object lookupmany at 0xb70325cc>
+  >>> client.lookup('91.121.224.117',qType='PEER')
+  <cymru.ip2asn.dns.recordPeer instance: ASN:1299,3320,3549,4565,5511,6762,10310|PREFIX:91.121.0.0/16|CC:FR|LIR:ripencc|DATE:2006-09-20>
+
+
+Malware Hash Registry usage :
+
+  >>> import hashlib
+  >>> from cymru.mhr.dns import DNSClient as mhr
+  >>> client=mhr()
+  >>> h=hashlib.sha1(file("/tmp/malware", 'r').read()).hexdigest()
+  >>> #md5
+  ... client.lookup('733a48a9cb49651d72fe824ca91e8d00')
+  <cymru.mhr.dns.mhr instance: TS:1277221946|DETECTION:79%|HASH:733a48a9cb49651d72fe824ca91e8d00>
+  >>> #sha1 other file
+  ... client.lookup('0fd453efa2320350f2b08fbfe194b39aab5f798d')
+  <cymru.mhr.dns.mhr instance: TS:None|DETECTION:None%|HASH:0fd453efa2320350f2b08fbfe194b39aab5f798d>
+
+Bogon usage :
+
+  >>> from cymru.bogon.dns import DNSClient as bogon
+  >>> client=bogon()
+  >>> ips=['192.168.0.244','198.51.100.0','202.42.42.42']
+  >>> client.lookupmany_dict(ips,'IP')
+  ({'198.51.100.0': True, '202.42.42.42': False, '192.168.0.244': True}, set([]))
+  >>> client.lookupmany_dict(ips,'FULLIP')
+  ({'198.51.100.0': True, '202.42.42.42': False, '192.168.0.244': True}, set([]))
+  >>> ip6s=['fe80::4','3ffe:5678:987::3','2001:678:67::01']
+  >>> client.lookupmany_dict(ip6s,'FULLIP6')
+  ({'3ffe:5678:987::3': True, 'fe80::4': True, '2001:678:67::01': True}, set([]))
+  >>> client.lookupmany_dict(ip6s,'FULLIP6RANGE')
+  ({'3ffe:5678:987::3': IP('3000::/4'), 'fe80::4': IP('8000::/1'), '2001:678:67::01': IP('2001:678:40::/42')}, set([]))
+
+
+
+

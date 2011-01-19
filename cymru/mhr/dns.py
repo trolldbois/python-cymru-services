@@ -13,7 +13,7 @@ import adns
 
 from ..core.dns import DNSClient as DNSCoreClient
 
-log = logging.getLogger('Cymru:mhr:dns')
+log = logging.getLogger('cymru.mhr.dns')
 
 
 class mhr:
@@ -86,11 +86,8 @@ def testHash():
   log.debug('START TEST HASH')
   c= DNSClient()
   hashes=['0fd453efa2320350f2b08fbfe194b39aab5f798d','733a48a9cb49651d72fe824ca91e8d00']
-  #c.lookupFile("/tmp/malware")
+  #file = ("/tmp/malware")
   #733a48a9cb49651d72fe824ca91e8d00.malware.hash.cymru.com
-  res=c.lookupmany(hashes)
-  for r in res:
-    log.info( r)
   res=c.lookupmany(hashes)
   for r in res:
     log.info( r)

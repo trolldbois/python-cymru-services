@@ -16,7 +16,7 @@ import adns,IPy
 
 from ..core.dns import DNSClient as DNSCoreClient
 
-log = logging.getLogger('Cymru:ip2asn:dns')
+log = logging.getLogger('cymru.ip2asn.dns')
 
 
 class record:
@@ -218,9 +218,4 @@ def testAll():
 
 if __name__ == "__main__":
   logging.basicConfig(level=logging.INFO)
-  testOrigin()
-  testOrigin6()
-  testASN()
-  testPeer()
-  #lookup_stdin()
 

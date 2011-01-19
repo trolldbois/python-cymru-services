@@ -3,7 +3,7 @@ from setuptools import setup
 from glob import glob
 
 setup(name="cymru-services",
-    version="1.2",
+    version="1.3",
     description="Python API for the Cymru Services",
     long_description="""
 Python API to use Cymru services. This code is not supported nor endorsed by Cymru.
@@ -25,12 +25,13 @@ The Malware Hash Registry
 
 The Malware Hash Registry provides the ability to perform lookups of MD5 and SHA-1 hashes of files to see if Team Cymru's malware analysis system has classified them as malware, along with information about when the sample was last seen and an approximate anti-virus detection percentage. For more information on the data returned and how to query this system, check out the Malware Hash Registry.
 
-See https://github.com/trolldbois/python-cymru-services/raw/master/README for full documentation.
+See http://www.team-cymru.org/Services/ for services documentation.
+See https://github.com/trolldbois/python-cymru-services/raw/master/README for API documentation.
     """,
 
     url="http://packages.python.org/cymru-services/",
     download_url="http://github.com/trolldbois/python-cymru-services/tree/master",
-    license='MIT',
+    license='GPL',
     classifiers=[
         "Topic :: System :: Networking",
         "Environment :: Console",

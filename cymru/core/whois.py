@@ -86,7 +86,10 @@ class WhoisClient():
     # clean values and type IP values
     values,qType = self._cleanValues(values,qType)
     #go
-    return self._lookupmany(values,qType)
+    cached,not_cached = self._lookupmany(values,qType)
+    for k in not_cached:
+      cached[k]=None
+    return cached
   
   def whois(self,query):
     ''' submit queries to whois server'''

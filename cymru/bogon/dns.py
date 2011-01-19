@@ -12,7 +12,7 @@ import adns,IPy
 
 from ..core.dns import DNSClient as DNSCoreClient
 
-log = logging.getLogger('Cymru:bogon:dns')
+log = logging.getLogger('cymru:bogon:dns')
 
 
 class DNSClient(DNSCoreClient):
@@ -102,8 +102,8 @@ def testBogon():
   c= DNSClient()
   ips=['192.168.0.244','198.51.100.0','202.42.42.42']
   datas=c.lookupmany_dict(ips,'IP')
-  for data in datas:
-    log.info(data)
+  for ip in ips:
+    log.info("c.lookupmany_dict(%s,'IP') = %s"%(ip,datas[ip]))
   log.debug('STOP TEST BOGON\n\n')
 
 def testFullBogon():
@@ -111,8 +111,8 @@ def testFullBogon():
   c= DNSClient()
   ips=['192.168.0.244','198.51.100.0','202.42.42.42']
   datas=c.lookupmany_dict(ips,'FULLIP')
-  for data in datas:
-    log.info(data)
+  for ip in ips:
+    log.info("c.lookupmany_dict(%s,'FULLIP') = %s"%(ip,datas[ip]))
   log.debug('STOP TEST FullBOGON\n\n')
 
 def testFullBogonRange():
@@ -120,8 +120,8 @@ def testFullBogonRange():
   c= DNSClient()
   ips=['192.168.0.244','198.51.100.0','202.42.42.42']
   datas=c.lookupmany_dict(ips,'FULLIPRANGE')
-  for data in datas:
-    log.info(data)
+  for ip in ips:
+    log.info("c.lookupmany_dict(%s,'FULLIPRANGE') = %s"%(ip,datas[ip]))
   log.debug('STOP TEST FullBOGONRANGE\n\n')
 
 def testFull6Bogon():
@@ -129,8 +129,8 @@ def testFull6Bogon():
   c= DNSClient()
   ips=['fe80::4','3ffe:5678:987::3','2001:678:67::01']
   datas=c.lookupmany_dict(ips,'FULLIP6')
-  for data in datas:
-    log.info(data)
+  for ip in ips:
+    log.info("c.lookupmany_dict(%s,'FULLIP6') = %s"%(ip,datas[ip]))
   log.debug('STOP TEST FullBOGON IPv6\n\n')
 
 def testFull6BogonRange():
@@ -138,8 +138,8 @@ def testFull6BogonRange():
   c= DNSClient()
   ips=['fe80::4','3ffe:5678:987::3','2001:678:67::01']
   datas=c.lookupmany_dict(ips,'FULLIP6RANGE')
-  for data in datas:
-    log.info(data)
+  for ip in ips:
+    log.info("c.lookupmany_dict(%s,'FULLIP6RANGE') = %s"%(ip,datas[ip]))
   log.debug('STOP TEST FullBOGON IPv6 RANGE\n\n')
 
 def testAll():

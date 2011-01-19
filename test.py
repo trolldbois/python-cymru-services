@@ -57,6 +57,7 @@ ips=['192.168.0.244','198.51.100.0','202.42.42.42']
 client.lookupmany_dict(ips)
 ip6s=['2001:4860:8010::68','2001:7a8:1:1::76']
 client.lookupmany_dict(ip6s,qType='IP6')
+client.lookupmany_dict(['1515','5005'],qType='ASN')
 
 
 

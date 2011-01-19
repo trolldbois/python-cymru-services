@@ -15,7 +15,7 @@ import IPy
 
 from ..core.whois import WhoisClient as WhoisCoreClient
 
-log = logging.getLogger('ip2asn.whois')
+log = logging.getLogger('cymru.ip2asn.whois')
 
 
 def fix(x):

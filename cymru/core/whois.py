@@ -15,7 +15,7 @@ import IPy
 
 import cache
 
-log = logging.getLogger('core.whois')
+log = logging.getLogger('cymru.core.whois')
 
 
 class WhoisClient():

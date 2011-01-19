@@ -1,16 +1,22 @@
-
 import logging
 import cymru.ip2asn.dns
+import cymru.ip2asn.whois
 import cymru.mhr.dns
 import cymru.bogon.dns
 
 logging.basicConfig(level=logging.INFO)
 
 cymru.ip2asn.dns.testAll()
+cymru.ip2asn.whois.testAll()
 cymru.mhr.dns.testAll()
 cymru.bogon.dns.testAll()
 
+import sys
+sys.exit()
 
+'''
+  Examples.
+'''
 import socket
 from cymru.ip2asn.dns import DNSClient as ip2asn
 client = ip2asn()
@@ -44,6 +50,13 @@ client.lookupmany_dict(ips,'FULLIP')
 ip6s=['fe80::4','3ffe:5678:987::3','2001:678:67::01']
 client.lookupmany_dict(ip6s,'FULLIP6')
 client.lookupmany_dict(ip6s,'FULLIP6RANGE')
+
+from cymru.ip2asn.whois import WhoisClient as whois
+client=whois()
+ips=['192.168.0.244','198.51.100.0','202.42.42.42']
+client.lookupmany_dict(ips)
+ip6s=['2001:4860:8010::68','2001:7a8:1:1::76']
+client.lookupmany_dict(ip6s,qType='IP6')
 
 
 

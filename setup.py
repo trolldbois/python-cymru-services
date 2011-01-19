@@ -25,7 +25,7 @@ The Malware Hash Registry
 
 The Malware Hash Registry provides the ability to perform lookups of MD5 and SHA-1 hashes of files to see if Team Cymru's malware analysis system has classified them as malware, along with information about when the sample was last seen and an approximate anti-virus detection percentage. For more information on the data returned and how to query this system, check out the Malware Hash Registry.
 
-See http://packages.python.org/python-cymru-services/ for full documentation.
+See https://github.com/trolldbois/python-cymru-services/raw/master/README for full documentation.
     """,
 
     url="http://packages.python.org/cymru-services/",

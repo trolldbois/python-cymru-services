@@ -38,34 +38,28 @@ class record:
     self.owner  = fix(owner)
     self.date  = fix(date)
   def __repr__(self):
-    return "<%s instance: ASN:%s|IP:%s|PREFIX:%s|CC:%s|LIR:%s|OWNER:%s|DATE:%s>" \
+    return "<%s instance: asn:%s|ip:%s|prefix:%s|cc:%s|lir:%s|owner:%s|date:%s>" \
           % (self.__class__, self.asn, self.ip, self.prefix, self.cc, self.lir, self.owner,self.date)
 
 class recordOrigin(record):
   def __init__(self, asn, prefix, cc, lir,date):
     self.init(asn=asn,prefix=prefix,cc=cc,lir=lir,date=date)
-  def __str__(self):
-    return "%-10s %-16s %-16s %s '%s'" % (self.asn, self.prefix, self.cc, self.lir, self.date)
   def __repr__(self):
-    return "<%s instance: ASN:%s|PREFIX:%s|CC:%s|LIR:%s|DATE:%s>" \
+    return "<%s instance: asn:%s|prefix:%s|cc:%s|lir:%s|date:%s>" \
           % (self.__class__, self.asn, self.prefix, self.cc, self.lir, self.date)
 
 class recordOrigin6(recordOrigin):
   def __init__(self, asn, prefix, cc, lir,date):
     self.init(asn=asn,prefix=prefix,cc=cc,lir=lir,date=date)
-  def __str__(self):
-    return "%-10s %-16s %-16s %s '%s'" % (self.asn, self.prefix, self.cc, self.lir, self.date)
   def __repr__(self):
-    return "<%s instance: ASN:%s|PREFIX:%s|CC:%s|LIR:%s|DATE:%s>" \
+    return "<%s instance: asn:%s|prefix:%s|cc:%s|lir:%s|date:%s>" \
           % (self.__class__, self.asn, self.prefix, self.cc, self.lir, self.date)
 
 class recordASN(record):
   def __init__(self, asn, cc, lir, date, owner):
     self.init(asn=asn,cc=cc,lir=lir,date=date, owner=owner)
-  def __str__(self):
-    return "%-10s %-16s %-16s %s '%s'" % (self.asn, self.cc, self.lir, self.date, self.owner)
   def __repr__(self):
-    return "<%s instance: ASN:%s|CC:%s|LIR:%s|OWNER:%s|DATE:%s>" \
+    return "<%s instance: asn:%s|cc:%s|lir:%s|owner:%s|date:%s>" \
           % (self.__class__, self.asn, self.cc, self.lir, self.owner,self.date)
 
 class recordPeer(record):
@@ -73,10 +67,8 @@ class recordPeer(record):
     # asn to list
     asn=",".join(asn.strip().split(" "))
     self.init(asn=asn,prefix=prefix,cc=cc,lir=lir,date=date)
-  def __str__(self):
-    return "%-10s %-16s %-16s %s '%s'" % (self.asn, self.prefix, self.cc, self.lir, self.date)
   def __repr__(self):
-    return "<%s instance: ASN:%s|PREFIX:%s|CC:%s|LIR:%s|DATE:%s>" \
+    return "<%s instance: asn:%s|prefix:%s|cc:%s|lir:%s|date:%s>" \
           % (self.__class__, self.asn, self.prefix, self.cc, self.lir, self.date)
 
 
@@ -182,25 +174,19 @@ class DNSClient(DNSCoreClient):
 def testOrigin():
   log.debug('START TEST ORIGIN')
   c= DNSClient()
-  ips=['88.198.224.117']
-  datas=[]
-  datas=c.lookupmany(ips)
-  for data in datas:
-    log.info("c.lookupmany(%s,qType='IP')"%(ips[0]))
-    log.info([data])
+  ips=['88.198.224.117','42.42.42.42']
+  datas=c.lookupmany_dict(ips)
+  for ip in ips:
+    log.info("c.lookupmany_dict(%s,qType='IP') = %s"%(ip, datas[IPy.IP(ip).strNormal()]))
   log.debug('END TEST ORIGIN\n\n')
 
 def testOrigin6():
   log.debug('START TEST ORIGIN6')
   c= DNSClient()
   ips=['2001:4860:8010::68','2001:7a8:1:1::76']
-  datas=[]
-  datas=c.lookupmany(ips,qType='IP6')
-  i=0
-  for data in datas:
-    log.info("c.lookupmany(%s,qType='IP6')"%(ips[i]))
-    log.info([data])
-    i+=1
+  datas=c.lookupmany_dict(ips,qType='IP6')
+  for ip in ips:
+    log.info("c.lookupmany_dict(%s,qType='IP6') = %s"%(ip,datas[IPy.IP(ip).strNormal()]))
   log.debug('END TEST ORIGIN6\n\n')
 
 
@@ -208,23 +194,18 @@ def testASN():
   log.debug('START TEST ASN')
   c= DNSClient()
   asns=['1515','5005']
-  datas=c.lookupmany(asns,qType='ASN')
-  i=0
-  for data in datas:
-    log.info("c.lookup(%s,qType='ASN')"%(asns[i]))
-    log.info([data])
-    i+=1
+  datas=c.lookupmany_dict(asns,qType='ASN')
+  for asn in asns:
+    log.info("c.lookupmany_dict(%s,qType='ASN') = %s"%(asn,datas[asn]))
   log.debug('END TEST ASN\n\n')
 
 def testPeer():
   log.debug('START TEST PEER')
   c= DNSClient()
   ips=['91.121.224.117']
-  datas=[]
-  datas=c.lookupmany(ips,qType='PEER')
-  for data in datas:
-    log.info("c.lookup(%s,qType='PEER')"%(ips[0]))
-    log.info([data])
+  datas=c.lookupmany_dict(ips,qType='PEER')
+  for ip in ips:
+    log.info("c.lookupmany_dict(%s,qType='PEER') = %s"%(ip,datas[IPy.IP(ip).strNormal()]))
   log.debug('END TEST PEER\n\n')
 
 

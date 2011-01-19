@@ -11,38 +11,11 @@ import socket
 import errno
 import logging
 
-import ADNS,adns
 import IPy
 
 import cache
 
 log = logging.getLogger('core.whois')
-
-
-
-
-class recordIp:
-  def __init__(self, asn=None, ip=None, prefix=None, cc=None, lir=None, date=None, owner=None, info=None):
-    self.init(asn, ip, prefix, cc, lir, date, owner, info)
-  def init(self, asn=None, ip=None, prefix=None, cc=None, lir=None, date=None, owner=None, info=None):
-    def fix(x):
-      if x is None:
-        return None
-      x = x.strip()
-      if x == "NA":
-        return None
-      return str(x.decode('ascii','ignore'))
-    self.asn    = fix(asn)
-    self.ip     = fix(ip)
-    self.prefix = fix(prefix)
-    self.cc     = fix(cc)
-    self.lir  = fix(lir)
-    self.owner  = fix(owner)
-    self.date  = fix(date)
-    self.info   = fix(info)
-  def __repr__(self):
-    return "<%s instance: asn:%s|ip:%s|prefix:%s|cc:%s|lir:%s|date:%s|owner:%s>" \
-          % (self.__class__, self.asn, self.ip, self.prefix, self.cc, self.lir, self.date,self.owner)
 
 
 class WhoisClient():
@@ -95,6 +68,7 @@ class WhoisClient():
       qType=self.QTYPES[0]
     # clean values and type IP values
     values = [str(value).strip() for value in values]
+    log.debug("values :%s" % (values)) 
     if qType in ['IP','IP6']:
       values = [IPy.IP(value).strNormal() for value in values]
     #go
@@ -155,34 +129,7 @@ class WhoisClient():
       resolveCallback : DNS response callback (  def _asyncResolve( self, answer, qname, rr, flags, extra) )
 
     '''
-    #raise NotImplementedError()
-    #return None,None
-    return self.buildRequest,self.buildRecordOrigin
-
-  def buildRequest(self,values):
-    vstring='\r\n'.join(values)
-    vstring='begin\r\nverbose\r\n'+vstring+'\r\nend\r\n'
-    return vstring
-
-  def buildRecordOrigin(self,response):
-    return self.buildRecords(response,recordIp,1,'IP')
-    
-  def buildRecords(self,response,recordMaker,ind,qType):
-    lines=response.split('\n')
-    log.debug('lines : %s'%(lines))
-    records=[]
-    for line in lines[1:-1]:
-      columns=[col.strip() for col in line.split('|')]
-      log.debug('columns %s'%(columns))
-      r=recordMaker(*columns)
-      log.debug('caching : %s'%(r))
-      self.cache.cache(columns[ind],r,qType)
-      records.append(r)
-    return records
-  
-
-
-
+    raise NotImplementedError()
 
 
 
@@ -206,9 +153,4 @@ def iterwindow(l, slice=50):
 
 if __name__ == "__main__":
   logging.basicConfig(level=logging.INFO)
-  #testOrigin()
-  #testOrigin6()
-  #testASN()
-  #testPeer()
-  lookup_stdin()
 

@@ -47,11 +47,12 @@ class Cache:
     # create keys based on prefix + svcname + qType + qvalue  
     keys = [self.KEY_FMT % (self.svcName,qType,value) for value in values]
     prefixlen=len(self.KEY_FMT % (self.svcName,qType,'')) 
-    log.debug('get_cached prefixlen  %d'%(prefixlen) )
+    log.debug('get_cached prefixlen  %d / %s'%(prefixlen,self.KEY_FMT % (self.svcName,qType,value)) )
     # look in local dict
     if not HAVE_MEMCACHE:
       vals=dict()
       for k in keys:
+        log.debug('get_cached looking for key %s'%(k) )
         if ( k in self.c):
           vals[k] = self.c[k]
       log.debug('get_cached related vals in CACHE %s'%(vals) )

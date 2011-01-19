@@ -15,16 +15,6 @@ from ..core.dns import DNSClient as DNSCoreClient
 log = logging.getLogger('Cymru:bogon:dns')
 
 
-class bogon:
-  ''' true or false'''
-  def __init__(self, val=False):
-    self.val    = val
-  def __repr__(self):
-    return "%s" % (self.val)
-
-
-
-
 class DNSClient(DNSCoreClient):
   """Python interface to Bogon service
 

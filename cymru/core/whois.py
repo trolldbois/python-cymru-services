@@ -27,12 +27,20 @@ class WhoisClient():
     self.server=server
     self.port=port
     self.cache=cache.Cache(svcName,memcache_host)
-      
+  
+  def _cleanValues(self,values,qType):
+    # clean values and type IP values
+    if qType is None:
+      qType=self.QTYPES[0]
+    values = [str(value).strip() for value in values]
+    log.debug("values :%s" % (values)) 
+    if qType in ['IP','IP6']:
+      values = [IPy.IP(value).strNormal() for value in values]
+    return values,qType
+    
   def _lookupmany(self, values, qType=None):
     ''' Lookup the values with a qType query to cymru services.
     '''
-    if qType is None:
-      qType=self.QTYPES[0]
     # iterwindows on the request...
     if (len(values) == 0):
       return
@@ -58,19 +66,12 @@ class WhoisClient():
     
     """Look up a single address.  """
   def lookup(self, value, qType=None):
-    if qType is None:
-      qType=self.QTYPES[0]
     return list(self.lookupmany([value],qType))[0]
     
   def lookupmany(self, values, qType=None):
     """Look up many ip addresses, returning a dictionary of ip -> record"""
-    if qType is None:
-      qType=self.QTYPES[0]
     # clean values and type IP values
-    values = [str(value).strip() for value in values]
-    log.debug("values :%s" % (values)) 
-    if qType in ['IP','IP6']:
-      values = [IPy.IP(value).strNormal() for value in values]
+    values,qType = self._cleanValues(values,qType)
     #go
     found,not_found = self._lookupmany(values,qType)
     #exit same order
@@ -82,12 +83,8 @@ class WhoisClient():
     return
 
   def lookupmany_dict(self, values, qType=None):
-    if qType is None:
-      qType=self.QTYPES[0]
     # clean values and type IP values
-    values = [str(value).strip() for value in values]
-    if qType in ['IP','IP6']:
-      values = [IPy.IP(value).strNormal() for value in values]
+    values,qType = self._cleanValues(values,qType)
     #go
     return self._lookupmany(values,qType)
   

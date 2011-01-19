@@ -18,19 +18,18 @@ from ..core.whois import WhoisClient as WhoisCoreClient
 log = logging.getLogger('ip2asn.whois')
 
 
-
+def fix(x):
+  if x is None:
+    return None
+  x = x.strip()
+  if x == "NA":
+    return None
+  return str(x.decode('ascii','ignore'))
 
 class recordIp:
   def __init__(self, asn=None, ip=None, prefix=None, cc=None, lir=None, date=None, owner=None, info=None):
     self.init(asn, ip, prefix, cc, lir, date, owner, info)
   def init(self, asn=None, ip=None, prefix=None, cc=None, lir=None, date=None, owner=None, info=None):
-    def fix(x):
-      if x is None:
-        return None
-      x = x.strip()
-      if x == "NA":
-        return None
-      return str(x.decode('ascii','ignore'))
     self.asn    = fix(asn)
     self.ip     = fix(ip)
     self.prefix = fix(prefix)
@@ -43,10 +42,23 @@ class recordIp:
     return "<%s instance: asn:%s|ip:%s|prefix:%s|cc:%s|lir:%s|date:%s|owner:%s>" \
           % (self.__class__, self.asn, self.ip, self.prefix, self.cc, self.lir, self.date,self.owner)
 
+class recordAS:
+  def __init__(self, asn=None, cc=None, lir=None, date=None, owner=None):
+    self.init(asn, cc, lir, date, owner)
+  def init(self, asn=None, cc=None, lir=None, date=None, owner=None):
+    self.asn    = fix(asn)
+    self.cc     = fix(cc)
+    self.lir  = fix(lir)
+    self.owner  = fix(owner)
+    self.date  = fix(date)
+  def __repr__(self):
+    return "<%s instance: asn:%s|cc:%s|lir:%s|date:%s|owner:%s>" \
+          % (self.__class__, self.asn, self.cc, self.lir, self.date,self.owner)
+
 
 class WhoisClient(WhoisCoreClient):
   '''Whois light client for Cymru Whois server.'''
-  QTYPES=['IP','IP6','AS']
+  QTYPES=['IP','IP6','ASN']
   client = None
   cache = None
   def __init__(self,server='whois.cymru.com',port=43,memcache_host='localhost:11211'):
@@ -57,11 +69,18 @@ class WhoisClient(WhoisCoreClient):
       return self.buildRequest,self.buildRecordOrigin
     elif qType == 'IP6':
       return self.buildRequest,self.buildRecordOrigin6
+    elif qType == 'ASN':
+      return self.buildRequestAS,self.buildRecordAS
     else:
       pass
 
   def buildRequest(self,values):
     vstring='\r\n'.join(values)
+    vstring='begin\r\nverbose\r\n'+vstring+'\r\nend\r\n'
+    return vstring
+
+  def buildRequestAS(self,values):
+    vstring='AS'+'\r\nAS'.join(values)
     vstring='begin\r\nverbose\r\n'+vstring+'\r\nend\r\n'
     return vstring
 
@@ -71,6 +90,9 @@ class WhoisClient(WhoisCoreClient):
   def buildRecordOrigin6(self,response):
     return self.buildRecords(response,recordIp,1,'IP6')
     
+  def buildRecordAS(self,response):
+    return self.buildRecords(response,recordAS,0,'ASN')
+
   def buildRecords(self,response,recordMaker,ind,qType):
     lines=response.split('\n')
     log.debug('lines : %s'%(lines))
@@ -111,14 +133,21 @@ def testIPv6():
     i+=1
   log.debug('END TEST IPv6\n\n')
 
+def testASN():
+  log.debug('START TEST ASN')
+  c= WhoisClient()
+  asns=['1515','5005']
+  datas=c.lookupmany(asns,qType='ASN')
+  for data in datas:
+    log.info("c.lookup(%s,qType='ASN') = %s"%(data.asn,data))
+  log.debug('END TEST ASN\n\n')
+
 def testAll():
   testIPv4()
   testIPv6()
+  testASN()
 
 
 if __name__ == "__main__":
   logging.basicConfig(level=logging.INFO)
-  #testASN()
-  #testPeer()
-  lookup_stdin()
 

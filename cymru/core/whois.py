@@ -23,7 +23,7 @@ class WhoisClient():
   QTYPES=[None]
   client = None
   cache = None
-  def __init__(self,svcName,server='whois.cymru.com',port=43,memcache_host='localhost:11211'):
+  def __init__(self,svcName,server,port,memcache_host):
     self.server=server
     self.port=port
     self.cache=cache.Cache(svcName,memcache_host)

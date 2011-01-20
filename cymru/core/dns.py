@@ -8,8 +8,6 @@
 # This module is released under the GPL v3 License:
 # http://www.opensource.org/licenses/gpl-3.0
 
-import socket
-import errno
 import logging
 
 import ADNS,adns

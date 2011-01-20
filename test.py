@@ -42,6 +42,12 @@ h=hashlib.sha1(file("/tmp/malware", 'r').read()).hexdigest()
 client.lookup('733a48a9cb49651d72fe824ca91e8d00')
 #sha1
 client.lookup('0fd453efa2320350f2b08fbfe194b39aab5f798d')
+from cymru.mhr.whois import WhoisClient as whois
+client=whois()
+#md5
+client.lookup('733a48a9cb49651d72fe824ca91e8d00')
+#sha1
+client.lookup('0fd453efa2320350f2b08fbfe194b39aab5f798d')
 
 
 from cymru.bogon.dns import DNSClient as bogon

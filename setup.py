@@ -43,7 +43,8 @@ See https://github.com/trolldbois/python-cymru-services/raw/master/README for AP
     keywords=['ASN','MHR','PEER','IP','BOGON','cymru'],
     author="Loic Jaquemet",
     author_email="loic.jaquemet+python@gmail.com",
-    py_modules = ["cymru"], 
+#    package_dir = {'': '.'}
+    packages = ['cymru','cymru.core','cymru.ip2asn','cymru.mhr','cymru.bogon'],
     extras_require = {
         'CACHE':  ["python-memcached"],
 	'ADNS':  ["python-adns"],

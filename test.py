@@ -2,6 +2,7 @@ import logging
 import cymru.ip2asn.dns
 import cymru.ip2asn.whois
 import cymru.mhr.dns
+import cymru.mhr.whois
 import cymru.bogon.dns
 
 logging.basicConfig(level=logging.INFO)
@@ -10,6 +11,7 @@ cymru.ip2asn.dns.testAll()
 cymru.ip2asn.whois.testAll()
 cymru.mhr.dns.testAll()
 cymru.bogon.dns.testAll()
+cymru.mhr.whois.testAll()
 
 import sys
 sys.exit()

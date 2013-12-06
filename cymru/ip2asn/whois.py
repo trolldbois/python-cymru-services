@@ -9,9 +9,7 @@
 
 import logging
 
-import IPy
-
-from ..core.whois import WhoisClient as WhoisCoreClient
+from cymru.core.whois import WhoisClient as WhoisCoreClient
 
 log = logging.getLogger('cymru.ip2asn.whois')
 
@@ -103,47 +101,6 @@ class WhoisClient(WhoisCoreClient):
       self.cache.cache(columns[ind],r,qType)
       records.append(r)
     return records
-  
-
-
-
-
-def testIPv4():
-  log.debug('START TEST IPV4')
-  c= WhoisClient()
-  ips=['192.168.0.244','198.51.100.0','202.42.42.42']
-  datas=[]
-  datas=c.lookupmany(ips)
-  for data in datas:
-    log.info("c.lookupmany(%s,qType='IP') : %s"%(data.ip, data))
-  log.debug('END TEST IPV4\n\n')
-
-def testIPv6():
-  log.debug('START TEST IPv6')
-  c= WhoisClient()
-  ips=['2001:4860:8010::68','2001:7a8:1:1::76']
-  datas=[]
-  datas=c.lookupmany(ips,qType='IP6')
-  i=0
-  for data in datas:
-    log.info("c.lookupmany(%s,qType='IP6') : %s"%(data.ip, data))
-    log.info([data])
-    i+=1
-  log.debug('END TEST IPv6\n\n')
-
-def testASN():
-  log.debug('START TEST ASN')
-  c= WhoisClient()
-  asns=['1515','5005']
-  datas=c.lookupmany(asns,qType='ASN')
-  for data in datas:
-    log.info("c.lookup(%s,qType='ASN') = %s"%(data.asn,data))
-  log.debug('END TEST ASN\n\n')
-
-def testAll():
-  testIPv4()
-  testIPv6()
-  testASN()
 
 
 if __name__ == "__main__":

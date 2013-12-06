@@ -11,7 +11,7 @@ import socket
 import errno
 import logging
 
-import IPy
+from cymru import ip_expand
 
 import cache
 
@@ -35,7 +35,7 @@ class WhoisClient():
     values = [str(value).strip() for value in values]
     log.debug("values :%s" % (values)) 
     if qType in ['IP','IP6']:
-      values = [IPy.IP(value).strNormal() for value in values]
+      values = [ip_expand(value) for value in values]
     return values,qType
     
   def _lookupmany(self, values, qType=None):

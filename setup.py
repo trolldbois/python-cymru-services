@@ -2,7 +2,7 @@
 from setuptools import setup
 
 setup(name="cymru-services",
-    version="1.3",
+    version="1.4",
     description="Python API for the Cymru Services",
     long_description="""
 Python API to use Cymru services. This code is not supported nor endorsed by Cymru.
@@ -39,14 +39,14 @@ See https://github.com/trolldbois/python-cymru-services/raw/master/README for AP
         "Programming Language :: Python",
         "Development Status :: 5 - Production/Stable",
     ],
-    keywords=['ASN','MHR','PEER','IP','BOGON','cymru'],
+    keywords=['ASN','MHR','PEER','IP','BOGON','cymru','python2','python3'],
     author="Loic Jaquemet",
     author_email="loic.jaquemet+python@gmail.com",
 #    package_dir = {'': '.'}
     packages = ['cymru','cymru.core','cymru.ip2asn','cymru.mhr','cymru.bogon'],
     extras_require = {
-        'CACHE':  ["python-memcached"],
-	'ADNS':  ["python-adns"],
-  'IPy':  ["IPy"],
+        'CACHE':  ["python-memcached"], # optional
+    	'ADNS':  ["python-adns"],
+        'IPy':  ["IPy"], # python 2
     },
 )

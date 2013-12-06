@@ -1,6 +1,8 @@
 #!/usr/bin/python -OO
 # -*- coding: iso-8859-15 -*-
 
+import sys
+
 try:
     import IPy
     def ip_reverse(ip):
@@ -31,6 +33,16 @@ except ImportError as e:
     def ip_expand(ip):
         return ipaddress.ip_address(ip).exploded
 
+def _fix(x):
+    if x is None:
+        return None
+    x = str(x).strip()
+    if x in ['NA','NO_NAME','']:
+        return None
+    if sys.version_info[0] >= 3: # Python 3
+        return x
+    else:
+        return str(x.decode('ascii','ignore'))
 
 
 __all__ = ["darknet", "bogon", "ip2asn","mhr","ip_reverse","ip_expand"]

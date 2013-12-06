@@ -11,38 +11,24 @@
 import logging
 
 import adns
-import sys
 
-from cymru import ip_reverse
+from cymru import ip_reverse, _fix
 from cymru.core.dns import DNSClient as DNSCoreClient
 
-
 log = logging.getLogger('cymru.ip2asn.dns')
-
-
 
 
 class record:
     def __init__(self, asn=None, ip=None, prefix=None, cc=None, owner=None,date=None,lir=None):
         self.init(asn, ip, prefix, cc, owner,date,lir)
     def init(self, asn=None, ip=None, prefix=None, cc=None, owner=None,date=None,lir=None):
-        if sys.version_info[0] >= 3: # Python 3
-            fix = lambda x: x
-        else:
-            def fix(x):
-                if x is None:
-                    return None
-                x = x.strip()
-                if x == "NA":
-                    return None
-                return str(x.decode('ascii','ignore'))
-        self.asn        = fix(asn)
-        self.ip         = fix(ip)
-        self.prefix = fix(prefix)
-        self.cc         = fix(cc)
-        self.lir    = fix(lir)
-        self.owner    = fix(owner)
-        self.date    = fix(date)
+        self.asn        = _fix(asn)
+        self.ip         = _fix(ip)
+        self.prefix = _fix(prefix)
+        self.cc         = _fix(cc)
+        self.lir    = _fix(lir)
+        self.owner    = _fix(owner)
+        self.date    = _fix(date)
     def __repr__(self):
         return "<%s instance: asn:%s|ip:%s|prefix:%s|cc:%s|lir:%s|owner:%s|date:%s>" \
                     % (self.__class__, self.asn, self.ip, self.prefix, self.cc, self.lir, self.owner,self.date)

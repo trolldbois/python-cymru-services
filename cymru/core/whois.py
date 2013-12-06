@@ -13,7 +13,7 @@ import logging
 
 from cymru import ip_expand
 
-import cache
+from cymru.core import cache
 
 log = logging.getLogger('cymru.core.whois')
 
@@ -24,9 +24,9 @@ class WhoisClient():
   client = None
   cache = None
   def __init__(self,svcName,server,port,memcache_host):
-    self.server=server
-    self.port=port
-    self.cache=cache.Cache(svcName,memcache_host)
+    self.server = server
+    self.port = port
+    self.cache = cache.Cache(svcName, memcache_host)
   
   def _cleanValues(self,values,qType):
     # clean values and type IP values
@@ -96,26 +96,26 @@ class WhoisClient():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((self.server, self.port))
     log.debug(query)
-    sock.send(query)
-    response = ''
+    sock.send(query.encode()) # py3
+    response = b''
     while True:
       d = sock.recv(4096)
       response += d
-      if d == '':
+      if d == b'':
         break
     sock.close()
-    return response
+    return response.decode() #py3
       
   ''' submits the queries to ADNS'''
   def _lookupmany_raw(self, values, qType):
     # decide what callbacks to use
-    buildRequest, buildRecords=self._getCB(qType)
+    buildRequest, buildRecords = self._getCB(qType)
     #
     values = set(values)
-    query=buildRequest(values)
-    response=self.whois(query)
+    query = buildRequest(values)
+    response = self.whois(query)
     log.debug(response)
-    records=buildRecords(response)
+    records = buildRecords(response)
     log.debug('cache contents : %s'%(self.cache.c) )
     return response
 

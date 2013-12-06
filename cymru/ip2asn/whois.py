@@ -10,30 +10,23 @@
 import logging
 
 from cymru.core.whois import WhoisClient as WhoisCoreClient
+from cymru import _fix
 
 log = logging.getLogger('cymru.ip2asn.whois')
 
-
-def fix(x):
-  if x is None:
-    return None
-  x = x.strip()
-  if x == "NA":
-    return None
-  return str(x.decode('ascii','ignore'))
 
 class recordIp:
   def __init__(self, asn=None, ip=None, prefix=None, cc=None, lir=None, date=None, owner=None, info=None):
     self.init(asn, ip, prefix, cc, lir, date, owner, info)
   def init(self, asn=None, ip=None, prefix=None, cc=None, lir=None, date=None, owner=None, info=None):
-    self.asn    = fix(asn)
-    self.ip     = fix(ip)
-    self.prefix = fix(prefix)
-    self.cc     = fix(cc)
-    self.lir  = fix(lir)
-    self.owner  = fix(owner)
-    self.date  = fix(date)
-    self.info   = fix(info)
+    self.asn    = _fix(asn)
+    self.ip     = _fix(ip)
+    self.prefix = _fix(prefix)
+    self.cc     = _fix(cc)
+    self.lir  = _fix(lir)
+    self.owner  = _fix(owner)
+    self.date  = _fix(date)
+    self.info   = _fix(info)
   def __repr__(self):
     return "<%s instance: asn:%s|ip:%s|prefix:%s|cc:%s|lir:%s|date:%s|owner:%s>" \
           % (self.__class__, self.asn, self.ip, self.prefix, self.cc, self.lir, self.date,self.owner)
@@ -42,11 +35,11 @@ class recordAS:
   def __init__(self, asn=None, cc=None, lir=None, date=None, owner=None):
     self.init(asn, cc, lir, date, owner)
   def init(self, asn=None, cc=None, lir=None, date=None, owner=None):
-    self.asn    = fix(asn)
-    self.cc     = fix(cc)
-    self.lir  = fix(lir)
-    self.owner  = fix(owner)
-    self.date  = fix(date)
+    self.asn    = _fix(asn)
+    self.cc     = _fix(cc)
+    self.lir  = _fix(lir)
+    self.owner  = _fix(owner)
+    self.date  = _fix(date)
   def __repr__(self):
     return "<%s instance: asn:%s|cc:%s|lir:%s|date:%s|owner:%s>" \
           % (self.__class__, self.asn, self.cc, self.lir, self.date,self.owner)
@@ -71,13 +64,13 @@ class WhoisClient(WhoisCoreClient):
       pass
 
   def buildRequest(self,values):
-    vstring='\r\n'.join(values)
-    vstring='begin\r\nverbose\r\n'+vstring+'\r\nend\r\n'
+    vstring = '\r\n'.join(values)
+    vstring = 'begin\r\nverbose\r\n'+vstring+'\r\nend\r\n'
     return vstring
 
   def buildRequestAS(self,values):
-    vstring='AS'+'\r\nAS'.join(values)
-    vstring='begin\r\nverbose\r\n'+vstring+'\r\nend\r\n'
+    vstring = 'AS'+'\r\nAS'.join(values)
+    vstring = 'begin\r\nverbose\r\n'+vstring+'\r\nend\r\n'
     return vstring
 
   def buildRecordOrigin(self,response):
@@ -90,13 +83,13 @@ class WhoisClient(WhoisCoreClient):
     return self.buildRecords(response,recordAS,0,'ASN')
 
   def buildRecords(self,response,recordMaker,ind,qType):
-    lines=response.split('\n')
+    lines = response.split('\n')
     log.debug('lines : %s'%(lines))
-    records=[]
+    records = []
     for line in lines[1:-1]:
-      columns=[col.strip() for col in line.split('|')]
+      columns = [col.strip() for col in line.split('|')]
       log.debug('columns %s'%(columns))
-      r=recordMaker(*columns)
+      r = recordMaker(*columns)
       log.debug('caching : %s'%(r))
       self.cache.cache(columns[ind],r,qType)
       records.append(r)

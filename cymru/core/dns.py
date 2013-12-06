@@ -10,10 +10,12 @@
 
 import logging
 
-import ADNS,adns
-import IPy
+import ADNS
+import adns
 
-import cache
+from cymru import ip_expand
+
+from cymru.core import cache
 
 log = logging.getLogger('core.dns')
 
@@ -52,7 +54,7 @@ class DNSClient:
     values = [str(value).strip() for value in values]
     log.debug("values :%s" % (values)) 
     if qType in ['IP','IP6']:
-      values = [IPy.IP(value).strNormal() for value in values]
+      values = [ip_expand(value) for value in values]
     return values,qType
     
   def _lookupmany(self, values, qType=None):

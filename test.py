@@ -7,18 +7,12 @@ import cymru.mhr.dns
 import cymru.mhr.whois
 import cymru.bogon.dns
 
+from cymru import ip_expand
+
 import unittest
 
 logging.basicConfig(level=logging.INFO)
 
-try:
-    import ipaddress
-    def ip(_ip):
-        return str(ipaddress.ip_address(_ip))
-except ImportError as exc:
-    import IPy
-    def makeip(_ip):
-        return IPy.IP(_ip).strNormal()
 
 
 class TestDNS(unittest.TestCase):
@@ -46,9 +40,9 @@ class TestDNS(unittest.TestCase):
         datas = self.c.lookupmany_dict(ips,qType='IP6')
         # getip - need ip6 full address
         for attr in ['asn','prefix','cc','lir','date']:
-            self.assertIsNotNone( getattr(datas[makeip(ips[0])], attr) )
-            self.assertIsNotNone( getattr(datas[makeip(ips[1])], attr) )
-            self.assertIsNone( getattr(datas[makeip(ips[2])], attr) )
+            self.assertIsNotNone( getattr(datas[ip_expand(ips[0])], attr) )
+            self.assertIsNotNone( getattr(datas[ip_expand(ips[1])], attr) )
+            self.assertIsNone( getattr(datas[ip_expand(ips[2])], attr) )
 
     def testPeer(self):
         ips = ['91.121.224.117','10.10.11.12']

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
-from glob import glob
 
 setup(name="cymru-services",
     version="1.3",

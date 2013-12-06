@@ -4,8 +4,8 @@ import logging
 import cymru.ip2asn.dns
 import cymru.ip2asn.whois
 import cymru.bogon.dns
-#import cymru.mhr.dns
-#import cymru.mhr.whois
+import cymru.mhr.dns
+import cymru.mhr.whois
 
 from cymru import ip_expand
 
@@ -119,6 +119,31 @@ class TestBogon(unittest.TestCase):
         self.assertEqual( datas[ips[0]], '192.168.0.0/16', )
         self.assertEqual( datas[ips[1]], '198.51.100.0/24', )
         self.assertFalse( datas[ips[2]] )
+
+
+class TestMhrDNS(unittest.TestCase):
+
+    def setUp(self):
+        self.c = cymru.mhr.dns.DNSClient()
+
+    def testHash(self):
+        hashes = ['0fd453efa2320350f2b08fbfe194b39aab5f798d','733a48a9cb49651d72fe824ca91e8d00']
+        #'733a48a9cb49651d72fe824ca91e8d00' is malware
+        res = [x for x in self.c.lookupmany(hashes)]
+        self.assertIsNone( res[0].detection )
+        self.assertIsNotNone( res[1].detection )
+
+class TestMhrWhois(unittest.TestCase):
+
+    def setUp(self):
+        self.c = cymru.mhr.whois.WhoisClient()
+
+    def testHash(self):
+        hashes = ['0fd453efa2320350f2b08fbfe194b39aab5f798d','733a48a9cb49651d72fe824ca91e8d00']
+        #'733a48a9cb49651d72fe824ca91e8d00' is malware
+        res = [x for x in self.c.lookupmany(hashes)]
+        self.assertIsNone( res[0].detection )
+        self.assertIsNotNone( res[1].detection )
 
 
 if __name__ == '__main__':

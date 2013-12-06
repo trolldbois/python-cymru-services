@@ -11,7 +11,7 @@ import logging,sys
 
 import adns
 
-from ..core.dns import DNSClient as DNSCoreClient
+from cymru.core.dns import DNSClient as DNSCoreClient
 
 log = logging.getLogger('cymru.mhr.dns')
 
@@ -61,17 +61,17 @@ class DNSClient(DNSCoreClient):
 
   def _asyncResolve( self, recordMaker, answer, qname, rr, flags, extra):
     log.debug(' inputs : %s ; qname:%s rr:%s flags:%s l:%s'%(answer, qname, rr, flags, extra) )
-    r=''
+    r = None
     qType,realq=extra
     log.debug('Real query : %s , qname : %s '%(realq,qname))
     if (len(answer[3])==0):
       log.debug('No lookup for %s'%(qname))
-      r=mhr(_hash=qname.split('.')[0])
+      r = mhr(_hash=qname.split('.')[0])
     else:
-      result=answer[3][0][0]
-      parts=result.split(" ")
+      result = answer[3][0][0].decode()
+      parts = result.split(" ")
       parts.append(qname.split('.')[0])
-      r=recordMaker(*parts)
+      r = recordMaker(*parts)
     self.cache.cache(realq,r,qType)
 
   '''
@@ -80,21 +80,4 @@ class DNSClient(DNSCoreClient):
   def _asyncResolveHash( self, answer, qname, rr, flags, l):
     self._asyncResolve(mhr,answer,qname,rr,flags,l)
 
-
-
-def testHash():
-  log.debug('START TEST HASH')
-  c= DNSClient()
-  hashes=['0fd453efa2320350f2b08fbfe194b39aab5f798d','733a48a9cb49651d72fe824ca91e8d00']
-  #file = ("/tmp/malware")
-  #733a48a9cb49651d72fe824ca91e8d00.malware.hash.cymru.com
-  res=c.lookupmany(hashes)
-  for r in res:
-    log.info( r)
-  log.debug('STOP TEST HASH\n\n')
-
-
-def testAll():
-  logging.basicConfig(level=logging.INFO)
-  testHash()
 

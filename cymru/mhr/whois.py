@@ -9,7 +9,7 @@
 
 import logging
 
-from ..core.whois import WhoisClient as WhoisCoreClient
+from cymru.core.whois import WhoisClient as WhoisCoreClient
 
 log = logging.getLogger('cymru.mhr.whois')
 
@@ -33,49 +33,29 @@ class WhoisClient(WhoisCoreClient):
     WhoisCoreClient.__init__(self,'mhr',server,port,memcache_host)
     
   def _getCB(self,qType):
-    if qType=='MW':
+    if qType == 'MW':
       return self.buildRequest,self.buildRecordMW
     else:
       pass
 
   def buildRequest(self,values):
-    vstring='\r\n'.join(values)
-    vstring='begin\r\nverbose\r\n'+vstring+'\r\nend\r\n'
+    vstring = '\r\n'.join(values)
+    vstring = 'begin\r\nverbose\r\n'+vstring+'\r\nend\r\n'
     return vstring
 
   def buildRecordMW(self,response):
     return self.buildRecords(response,mhr,0,'MW')
 
   def buildRecords(self,response,recordMaker,ind,qType):
-    lines=response.split('\n')
+    lines = response.split('\n')
     log.debug('lines : %s'%(lines))
-    records=[]
+    records = []
     for line in lines[2:-1]:
-      columns=[col.strip() for col in line.split(' ')]
+      columns = [col.strip() for col in line.split(' ')]
       log.debug('columns %s'%(columns))
-      r=recordMaker(*columns)
+      r = recordMaker(*columns)
       log.debug('caching : %s'%(r))
       self.cache.cache(columns[ind],r,qType)
       records.append(r)
     return records
   
-
-
-
-
-def testHash():
-  log.debug('START TEST HASH')
-  c= WhoisClient()
-  hashes=['0fd453efa2320350f2b08fbfe194b39aab5f798d','733a48a9cb49651d72fe824ca91e8d00']
-  #file = ("/tmp/malware")
-  #733a48a9cb49651d72fe824ca91e8d00.malware.hash.cymru.com
-  res=c.lookupmany(hashes)
-  for r in res:
-    log.info( r)
-  log.debug('STOP TEST HASH\n\n')
-
-
-def testAll():
-  logging.basicConfig(level=logging.INFO)
-  testHash()
-

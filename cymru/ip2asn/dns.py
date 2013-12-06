@@ -11,6 +11,7 @@
 import logging
 
 import adns
+import sys
 
 from cymru import ip_reverse
 from cymru.core.dns import DNSClient as DNSCoreClient
@@ -25,13 +26,16 @@ class record:
     def __init__(self, asn=None, ip=None, prefix=None, cc=None, owner=None,date=None,lir=None):
         self.init(asn, ip, prefix, cc, owner,date,lir)
     def init(self, asn=None, ip=None, prefix=None, cc=None, owner=None,date=None,lir=None):
-        def fix(x):
-            if x is None:
-                return None
-            x = x.strip()
-            if x == "NA":
-                return None
-            return str(x.decode('ascii','ignore'))
+        if sys.version_info[0] >= 3: # Python 3
+            fix = lambda x: x
+        else:
+            def fix(x):
+                if x is None:
+                    return None
+                x = x.strip()
+                if x == "NA":
+                    return None
+                return str(x.decode('ascii','ignore'))
         self.asn        = fix(asn)
         self.ip         = fix(ip)
         self.prefix = fix(prefix)
@@ -143,7 +147,7 @@ class DNSClient(DNSCoreClient):
             log.warning('No lookup for %s'%(qname))
             r=record()
         else:
-            result=answer[3][0][0]
+            result = str(answer[3][0][0])
             parts=result.split("|")
             r=recordMaker(*parts)
         self.cache.cache(realq,r,qType)

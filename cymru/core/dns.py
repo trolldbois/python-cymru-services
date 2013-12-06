@@ -127,7 +127,7 @@ class DNSClient:
       self.client.submit(fqdn,dnsType, 0, resolveCB, extra)
     self.client.finish()
     records,not_cached=self.cache.get_cached(values,qType)
-    return records.itervalues()
+    return iter(records.values())
 
 
   def _getCB(self,qType):

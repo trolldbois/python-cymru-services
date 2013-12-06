@@ -2,10 +2,10 @@
 
 import logging
 import cymru.ip2asn.dns
-import cymru.ip2asn.whois
-import cymru.mhr.dns
-import cymru.mhr.whois
-import cymru.bogon.dns
+#import cymru.ip2asn.whois
+#import cymru.mhr.dns
+#import cymru.mhr.whois
+#import cymru.bogon.dns
 
 from cymru import ip_expand
 

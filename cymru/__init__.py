@@ -17,14 +17,17 @@ try:
 except ImportError as e:
     import ipaddress # sucks for reverse.
     def ip_reverse(ip):
-        _tmp = ip.split('.')
-        _tmp.reverse()
-        return '.'.join(_tmp)
-    def ip_reverse6(ip):
-        _tmp = expandip(ip).replace(':','')
-        _tmp.reverse()
-        print(ip, '.'.join(_tmp))
-        return '.'.join(_tmp)
+        ip = ipaddress.ip_address(ip)
+        if ip.version == 4:
+            _tmp = ip_expand(ip).split('.')
+            _tmp.reverse()
+            return '.'.join(_tmp)
+        elif ip.version == 6:
+            _tmp = [ c for c in ip_expand(ip) if c !=':']
+            _tmp.reverse()
+            return '.'.join(_tmp)
+        else:
+            raise ValueError('IP Type %d is not supported'%(ip.version))
     def ip_expand(ip):
         return ipaddress.ip_address(ip).exploded
 

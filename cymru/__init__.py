@@ -15,6 +15,8 @@ try:
             raise ValueError('IP Type %d is not supported'%(ip.version()))
     def ip_expand(ip):
         return IPy.IP(ip).strNormal()
+    def ip_network(ip):
+        return IPy.IP(ip).strCompressed()
 
 except ImportError as e:
     import ipaddress # sucks for reverse.
@@ -32,6 +34,8 @@ except ImportError as e:
             raise ValueError('IP Type %d is not supported'%(ip.version))
     def ip_expand(ip):
         return ipaddress.ip_address(ip).exploded
+    def ip_network(ip):
+        return ipaddress.ip_network(ip).compressed
 
 def _fix(x):
     if x is None:

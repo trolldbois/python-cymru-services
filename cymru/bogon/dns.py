@@ -8,9 +8,10 @@
 import errno
 import logging,sys
 
-import adns,IPy
+import adns
 
-from ..core.dns import DNSClient as DNSCoreClient
+from cymru import ip_reverse, ip_network
+from cymru.core.dns import DNSClient as DNSCoreClient
 
 log = logging.getLogger('cymru:bogon:dns')
 
@@ -58,15 +59,15 @@ class DNSClient(DNSCoreClient):
       pass
               
   def _makeRequestIP(self,ip):
-    return adns.rr.A,IPy.IP(ip).reverseName().replace('.in-addr.arpa.',self.IP_BOGON_ROOT)
+    return adns.rr.A, '%s%s'%(ip_reverse(ip), self.IP_BOGON_ROOT)
   def _makeRequestFullIP(self,ip):
-    return adns.rr.A,IPy.IP(ip).reverseName().replace('.in-addr.arpa.',self.FULLIP_BOGON_ROOT)
+    return adns.rr.A, '%s%s'%(ip_reverse(ip), self.FULLIP_BOGON_ROOT)
   def _makeRequestFullIPRange(self,ip):
-    return adns.rr.TXT,IPy.IP(ip).reverseName().replace('.in-addr.arpa.',self.FULLIP_BOGON_ROOT)
+    return adns.rr.TXT, '%s%s'%(ip_reverse(ip), self.FULLIP_BOGON_ROOT)
   def _makeRequestFullIP6(self,ip):
-    return adns.rr.A,IPy.IP(ip).reverseName().replace('.ip6.arpa.',self.FULLIP6_BOGON_ROOT)
+    return adns.rr.A, '%s%s'%(ip_reverse(ip), self.FULLIP6_BOGON_ROOT)
   def _makeRequestFullIP6Range(self,ip):
-    return adns.rr.TXT,IPy.IP(ip).reverseName().replace('.ip6.arpa.',self.FULLIP6_BOGON_ROOT)
+    return adns.rr.TXT, '%s%s'%(ip_reverse(ip), self.FULLIP6_BOGON_ROOT)
 
   def _asyncResolve( self, answer, qname, rr, flags, extra):
     log.debug(' inputs : %s ; qname:%s rr:%s flags:%s l:%s'%(answer, qname, rr, flags, extra) )
@@ -93,7 +94,7 @@ class DNSClient(DNSCoreClient):
       r=False
     else:
       # it's a bogon
-      r=IPy.IP(answer[3][0][0])
+      r = ip_network(answer[3][0][0].decode())
     self.cache.cache(realq,r,qType)
 
 

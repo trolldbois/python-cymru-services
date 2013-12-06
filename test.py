@@ -3,17 +3,13 @@
 import logging
 import cymru.ip2asn.dns
 import cymru.ip2asn.whois
+import cymru.bogon.dns
 #import cymru.mhr.dns
 #import cymru.mhr.whois
-#import cymru.bogon.dns
 
 from cymru import ip_expand
 
 import unittest
-
-logging.basicConfig(level=logging.INFO)
-
-
 
 class TestDNS(unittest.TestCase):
 
@@ -52,7 +48,6 @@ class TestDNS(unittest.TestCase):
             self.assertIsNotNone( getattr(datas[ips[0]], attr) )
             self.assertIsNone( getattr(datas[ips[1]], attr) )
 
-
 class TestWhois(unittest.TestCase):
 
     def setUp(self):
@@ -85,9 +80,47 @@ class TestWhois(unittest.TestCase):
             self.assertIsNotNone( getattr(datas[1], attr) )
             self.assertIsNone( getattr(datas[2], attr) )
 
+class TestBogon(unittest.TestCase):
+
+    def setUp(self):
+        self.c = cymru.bogon.dns.DNSClient()
+
+    def testBogon(self):
+        ips = ['192.168.0.244','198.51.100.0','202.42.42.42']
+        datas = self.c.lookupmany_dict(ips,'IP')
+        self.assertTrue( datas[ips[0]] )
+        self.assertTrue( datas[ips[1]] )
+        self.assertFalse( datas[ips[2]] )
+
+    def testFull6Bogon(self):
+        ips = ['fe80::4','3ffe:5678:987::3','2001:678:67::01']
+        datas = self.c.lookupmany_dict(ips,'FULLIP6')
+        self.assertTrue( datas[ips[0]] )
+        self.assertFalse( datas[ips[1]] )
+        self.assertFalse( datas[ips[2]] )
+
+    def testFull6BogonRange(self):
+        ips = ['fe80::4','3ffe:5678:987::3','2001:678:67::01']
+        datas = self.c.lookupmany_dict(ips,'FULLIP6RANGE')
+        self.assertEqual( datas[ips[0]], '8000::/1', )
+        self.assertFalse( datas[ips[1]] )
+        self.assertFalse( datas[ips[2]] )
+
+    def testFullBogon(self):
+        ips = ['192.168.0.244','198.51.100.0','202.42.42.42']
+        datas = self.c.lookupmany_dict(ips,'FULLIP')
+        self.assertTrue( datas[ips[0]] )
+        self.assertTrue( datas[ips[1]] )
+        self.assertFalse( datas[ips[2]] )
+
+    def testFullBogonRange(self):
+        ips = ['192.168.0.244','198.51.100.0','202.42.42.42']
+        datas = self.c.lookupmany_dict(ips,'FULLIPRANGE')
+        self.assertEqual( datas[ips[0]], '192.168.0.0/16', )
+        self.assertEqual( datas[ips[1]], '198.51.100.0/24', )
+        self.assertFalse( datas[ips[2]] )
 
 
 if __name__ == '__main__':
-  logging.basicConfig(level=logging.DEBUG)
-  unittest.main()
+    unittest.main()
   
